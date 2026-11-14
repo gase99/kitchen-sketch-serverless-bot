@@ -80,7 +80,7 @@ test (typecheck + vitest)
   └─▶ deploy
         1. Check required secrets
         2. scripts/ensure-kv.mjs        → اگر KV namespace وجود ندارد آن را می‌سازد و id را در wrangler.toml می‌گذارد
-        3. wrangler deploy              → استقرار Worker (cloudflare/wrangler-action@v3)
+        3. wrangler deploy              → استقرار Worker (نسخهٔ wrangler قفل‌شده در package-lock.json)
         4. wrangler secret bulk         → آپلود Secretها روی Worker
         5. scripts/telegram-webhook.mjs → setWebhook (با secret_token) + setMyCommands
         6. Smoke test                   → بررسی سلامت سرویس و رد شدن درخواست بدون امضا (401)

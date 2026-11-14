@@ -59,13 +59,14 @@ jobs:
       - name: Ensure KV namespace exists
         run: node scripts/ensure-kv.mjs
 
+      # Uses the wrangler pinned in package-lock.json (wrangler-action would install its own, older default).
       - name: Deploy Worker
         id: deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+        run: |
+          set -o pipefail
+          npx wrangler deploy 2>&1 | tee deploy.log
+          url=$(grep -oE 'https://[A-Za-z0-9.-]+\.workers\.dev' deploy.log | head -n1 || true)
+          echo "deployment-url=$url" >> "$GITHUB_OUTPUT"
 
       - name: Upload Worker secrets
         run: |
