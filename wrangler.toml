@@ -13,7 +13,7 @@ enabled = true
 # In CI, scripts/ensure-kv.mjs creates the namespace (if missing) and injects its real id.
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "ac06ee56676941a9bdc7179b2c302b22"
 
 [vars]
 VISION_PROVIDER = "gemini"          # "gemini" | "openai"
