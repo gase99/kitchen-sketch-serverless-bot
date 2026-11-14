@@ -23,7 +23,7 @@
 
 ## 1. پیش‌نیازها
 
-- Node.js نسخهٔ ۲۰ یا بالاتر (فقط برای توسعهٔ محلی یا استقرار دستی)
+- Node.js نسخهٔ ۲۲ یا بالاتر (wrangler 4 به آن نیاز دارد؛ فقط برای توسعهٔ محلی یا استقرار دستی)
 - حساب رایگان [Cloudflare](https://dash.cloudflare.com/sign-up)
 - حساب GitHub برای CI/CD
 - کلید Google Gemini (رایگان) یا OpenAI
