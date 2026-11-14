@@ -108,13 +108,22 @@ export class TelegramApi {
     const res = await this.fetchImpl(`${API_BASE}/file/bot${this.token}/${file.file_path}`);
     if (!res.ok) throw new TelegramError("downloadFile", res.status, res.statusText);
     const bytes = new Uint8Array(await res.arrayBuffer());
-    return { bytes, mime: res.headers.get("content-type") ?? guessMime(file.file_path) };
+    return { bytes, mime: detectImageMime(bytes, res.headers.get("content-type"), file.file_path) };
   }
 }
 
-function guessMime(path: string): string {
+/** Telegram's file server answers with application/octet-stream, so trust the bytes first. */
+export function detectImageMime(bytes: Uint8Array, header: string | null, path: string): string {
+  const b = bytes;
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return "image/png";
+  if (b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) return "image/webp";
+  if (b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) return "image/gif";
+  const type = header?.split(";")[0].trim().toLowerCase();
+  if (type?.startsWith("image/")) return type;
   const ext = path.split(".").pop()?.toLowerCase();
   if (ext === "png") return "image/png";
   if (ext === "webp") return "image/webp";
+  if (ext === "heic" || ext === "heif") return `image/${ext}`;
   return "image/jpeg";
 }

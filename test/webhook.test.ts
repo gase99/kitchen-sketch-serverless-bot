@@ -24,7 +24,8 @@ function setup() {
   const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     if (url.startsWith(`https://api.telegram.org/file/bot${TOKEN}/`)) {
-      return new Response(new Uint8Array([0xff, 0xd8, 0xff]), { headers: { "content-type": "image/jpeg" } });
+      // Telegram's file server really answers with a generic content type.
+      return new Response(new Uint8Array([0xff, 0xd8, 0xff, 0xe0]), { headers: { "content-type": "application/octet-stream" } });
     }
     if (url.startsWith(`https://api.telegram.org/bot${TOKEN}/`)) {
       const method = url.split("/").pop()!;
@@ -95,7 +96,7 @@ describe("webhook", () => {
     });
     expect(res.status).toBe(200);
     expect(calls.find((c) => c.method === "getFile")?.body.file_id).toBe("large");
-    expect(gemini().contents[0].parts[0].inlineData).toEqual({ mimeType: "image/jpeg", data: "/9j/" });
+    expect(gemini().contents[0].parts[0].inlineData).toEqual({ mimeType: "image/jpeg", data: "/9j/4A==" });
     const planDoc = calls.find((c) => c.method === "sendDocument")!;
     expect(planDoc.body.caption).toContain("پلان دوبعدی");
     expect(JSON.parse(planDoc.body.reply_markup).inline_keyboard[0][0].callback_data).toBe("plan:ok");
