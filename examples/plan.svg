@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-90 -90 540 550" width="1080" height="1100" font-family="Vazirmatn, Tahoma, Arial, sans-serif" font-size="10">
+<title>Wall plan</title>
+<rect x="-90" y="-90" width="540" height="550" fill="#fff"/>
+<path d="M0,0L360,0L360,300L0,300Z" fill="#fbfaf7"/>
+<path d="M-15,-15L375,-15L375,315L-15,315Z M0,0L360,0L360,300L0,300Z" fill="#2b2b2b" fill-rule="evenodd"/>
+<rect x="120" y="-16" width="120" height="17" fill="#fff"/>
+<line x1="120" y1="-9.9" x2="240" y2="-9.9" stroke="#2e86de" stroke-width="2"/>
+<line x1="120" y1="-4.9" x2="240" y2="-4.9" stroke="#2e86de" stroke-width="2"/>
+<rect x="120" y="-15" width="120" height="15" fill="none" stroke="#2e86de" stroke-width="1.5"/>
+<text x="180" y="-24" fill="#2e86de" font-size="8" text-anchor="middle" dominant-baseline="middle">N1 120</text>
+<rect x="230" y="299" width="90" height="17" fill="#fff"/>
+<line x1="320" y1="300" x2="320" y2="210" stroke="#c0392b" stroke-width="2.5"/>
+<path d="M320,210 A90,90 0 0 1 230,300" fill="none" stroke="#c0392b" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="275" y="255" fill="#c0392b" text-anchor="middle" dominant-baseline="middle">D1</text>
+<text x="275" y="324" fill="#c0392b" font-size="8" text-anchor="middle" dominant-baseline="middle">D1 90</text>
+<circle cx="180" cy="9" r="7.5" fill="#2e86de" stroke="#fff" stroke-width="1"/>
+<text x="180" y="9" fill="#fff" font-size="8.5" font-weight="bold" text-anchor="middle" dominant-baseline="central">W</text>
+<circle cx="351" cy="150" r="7.5" fill="#e67e22" stroke="#fff" stroke-width="1"/>
+<text x="351" y="150" fill="#fff" font-size="8.5" font-weight="bold" text-anchor="middle" dominant-baseline="central">G</text>
+<text x="180" y="-41" fill="#555" font-size="10" font-weight="bold" text-anchor="middle" dominant-baseline="middle">W1 = 360 cm</text>
+<text x="401" y="150" fill="#555" font-size="10" font-weight="bold" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 401 150)">W2 = 300 cm</text>
+<text x="180" y="341" fill="#555" font-size="10" font-weight="bold" text-anchor="middle" dominant-baseline="middle">W3 = 360 cm</text>
+<text x="-41" y="150" fill="#555" font-size="10" font-weight="bold" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 -41 150)">W4 = 300 cm</text>
+<text x="0" y="400" fill="#333" font-size="10">Wall plan — 4 walls, 10.8 m², ceiling 270 cm</text>
+<text x="0" y="416" fill="#333" font-size="8">Red = doors · Blue = windows · W water · G gas · D drain · C chimney</text>
+</svg>

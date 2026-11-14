@@ -1,0 +1,20 @@
+{
+  "unit": "cm",
+  "ceilingHeight": 270,
+  "walls": [
+    { "id": "W1", "length": 360, "direction": "east" },
+    { "id": "W2", "length": 300, "direction": "south" },
+    { "id": "W3", "length": 360, "direction": "west" },
+    { "id": "W4", "length": 300, "direction": "north" }
+  ],
+  "openings": [
+    { "id": "N1", "type": "window", "wallId": "W1", "offset": 120, "width": 120, "sillHeight": 100 },
+    { "id": "D1", "type": "door", "wallId": "W3", "offset": 40, "width": 90 }
+  ],
+  "fixtures": [
+    { "type": "water", "wallId": "W1", "offset": 180 },
+    { "type": "gas", "wallId": "W2", "offset": 150 }
+  ],
+  "confidence": 0.86,
+  "notes": ["Sample sketch used for tests and the README preview."]
+}

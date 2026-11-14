@@ -1,0 +1,97 @@
+name: Deploy to Cloudflare Workers
+
+# Every push to main: test → deploy the Worker → upload secrets → (re)register the Telegram webhook.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      - name: Check required secrets
+        run: |
+          missing=0
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID TELEGRAM_BOT_TOKEN TELEGRAM_WEBHOOK_SECRET; do
+            if [ -z "${!name}" ]; then echo "::error::Repository secret $name is not set"; missing=1; fi
+          done
+          if [ -z "$GEMINI_API_KEY" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::Set GEMINI_API_KEY or OPENAI_API_KEY"; missing=1
+          fi
+          exit $missing
+
+      - name: Ensure KV namespace exists
+        run: node scripts/ensure-kv.mjs
+
+      - name: Deploy Worker
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+
+      - name: Upload Worker secrets
+        run: |
+          umask 077
+          node -e '
+            const names = ["TELEGRAM_BOT_TOKEN", "TELEGRAM_WEBHOOK_SECRET", "GEMINI_API_KEY", "OPENAI_API_KEY"];
+            const out = Object.fromEntries(names.filter((n) => process.env[n]).map((n) => [n, process.env[n]]));
+            require("fs").writeFileSync(".secrets.json", JSON.stringify(out));
+          '
+          npx wrangler secret bulk .secrets.json
+          rm -f .secrets.json
+
+      - name: Register Telegram webhook
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL || steps.deploy.outputs.deployment-url }}
+        run: |
+          if [ -z "$WORKER_URL" ]; then
+            echo "::error::Could not detect the Worker URL. Set the repository variable WORKER_URL (e.g. https://kitchen-sketch-bot.<subdomain>.workers.dev)"
+            exit 1
+          fi
+          npm run --silent webhook:set
+
+      - name: Smoke test
+        env:
+          WORKER_URL: ${{ vars.WORKER_URL || steps.deploy.outputs.deployment-url }}
+        run: |
+          curl -fsS "$WORKER_URL/" && echo
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$WORKER_URL/webhook" -d '{}')
+          test "$code" = "401" && echo "Webhook rejects unsigned requests ✔"
