@@ -43,7 +43,7 @@ openssl rand -hex 32
 
 | Provider | نحوهٔ دریافت | متغیر | مدل پیش‌فرض |
 |---|---|---|---|
-| **Google Gemini** (پلن رایگان دارد) | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | `GEMINI_API_KEY` | `gemini-2.5-flash` |
+| **Google Gemini** (پلن رایگان دارد) | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | `GEMINI_API_KEY` | `gemini-3.5-flash` |
 | OpenAI | [platform.openai.com/api-keys](https://platform.openai.com/api-keys) | `OPENAI_API_KEY` | `gpt-4o-mini` |
 | سرویس‌های سازگار با OpenAI (OpenRouter، Groq، ...) | پنل همان سرویس | `OPENAI_API_KEY` + `OPENAI_BASE_URL` | از طریق `OPENAI_MODEL` |
 
@@ -177,7 +177,8 @@ WORKER_URL=https://xxxx.trycloudflare.com TELEGRAM_BOT_TOKEN=... TELEGRAM_WEBHOO
 | `TELEGRAM_WEBHOOK_SECRET` | Secret | — | امضای وب‌هوک |
 | `GEMINI_API_KEY` / `OPENAI_API_KEY` | Secret | — | کلید Vision AI |
 | `VISION_PROVIDER` | var | `gemini` | `gemini` یا `openai` |
-| `GEMINI_MODEL` | var | `gemini-2.5-flash` | مدل Gemini |
+| `GEMINI_MODEL` | var | `gemini-3.5-flash` | مدل Gemini |
+| `GEMINI_THINKING_LEVEL` | var | `low` | سطح «فکر کردن» مدل‌های Gemini 3 به بعد (`minimal`، `low`، `medium`، `high`). سطح پایین‌تر سریع‌تر جواب می‌دهد و در محدودیت زمانی Worker می‌ماند |
 | `OPENAI_MODEL` | var | `gpt-4o-mini` | مدل OpenAI |
 | `OPENAI_BASE_URL` | var | `https://api.openai.com/v1` | برای سرویس‌های سازگار |
 | `ALLOWED_USER_IDS` | var | خالی | فهرست شناسه‌های عددی کاربران مجاز (جداشده با کاما) |

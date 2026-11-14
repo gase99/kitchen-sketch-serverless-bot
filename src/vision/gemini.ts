@@ -9,8 +9,9 @@ export class GeminiVision implements VisionProvider {
 
   constructor(
     private readonly apiKey: string,
-    private readonly model = "gemini-2.5-flash",
+    private readonly model = "gemini-3.5-flash",
     private readonly fetchImpl: typeof fetch = (...a) => fetch(...a),
+    private readonly thinkingLevel = "low",
   ) {}
 
   async extract(input: VisionInput): Promise<unknown> {
@@ -33,6 +34,10 @@ export class GeminiVision implements VisionProvider {
           temperature: 0.1,
           responseMimeType: "application/json",
           responseSchema: KITCHEN_SKETCH_JSON_SCHEMA,
+          // Gemini 3+ thinks by default; a lower level keeps latency inside the Worker's waitUntil budget.
+          ...(this.thinkingLevel && !/^gemini-[12]\./.test(this.model)
+            ? { thinkingConfig: { thinkingLevel: this.thinkingLevel } }
+            : {}),
         },
       }),
     });

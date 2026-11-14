@@ -7,6 +7,8 @@ export interface Env {
   VISION_PROVIDER?: "gemini" | "openai";
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
+  /** Gemini 3+ thinking level: minimal | low | medium | high ("" disables the override). */
+  GEMINI_THINKING_LEVEL?: string;
   OPENAI_API_KEY?: string;
   OPENAI_MODEL?: string;
   OPENAI_BASE_URL?: string;
