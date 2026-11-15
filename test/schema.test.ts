@@ -47,6 +47,17 @@ describe("normalizeSketch", () => {
     expect(plan.area).toBeCloseTo(8);
   });
 
+  it("rejects large closure errors instead of silently distorting a wall", () => {
+    expect(() => normalizeSketch({
+      walls: [
+        { id: "W1", length: 500, direction: "east" },
+        { id: "W2", length: 300, direction: "south" },
+        { id: "W3", length: 300, direction: "west" },
+        { id: "W4", length: 300, direction: "north" },
+      ],
+    })).toThrow(/do not close/);
+  });
+
   it("rejects non-orthogonal or degenerate input", () => {
     expect(() => normalizeSketch({ walls: [{ id: "W1", length: 100, direction: "east" }] })).toThrow(SketchValidationError);
     expect(() =>

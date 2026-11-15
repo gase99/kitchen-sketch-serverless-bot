@@ -9,7 +9,7 @@ export class GeminiVision implements VisionProvider {
 
   constructor(
     private readonly apiKey: string,
-    private readonly model = "gemini-3.5-flash",
+    private readonly model = "gemini-2.5-flash",
     private readonly fetchImpl: typeof fetch = (...a) => fetch(...a),
     private readonly thinkingLevel = "low",
   ) {}

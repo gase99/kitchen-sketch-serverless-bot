@@ -1,6 +1,7 @@
 import { generateLayout, type LayoutShape } from "../domain/layout";
 import { normalizeSketch, SketchValidationError, type KitchenSketch } from "../domain/schema";
 import { renderSvg } from "../render/svg";
+import { renderTechnicalSvg } from "../render/technical";
 import type { Session } from "../storage/session";
 import type { BotContext } from "./context";
 import * as M from "./messages";
@@ -74,7 +75,7 @@ export async function sendLayout(
     return;
   }
   const layout = generateLayout(session.sketch, shape);
-  const svg = renderSvg(session.sketch, layout, `Kitchen layout (${layout.shape})`);
+  const svg = renderTechnicalSvg(session.sketch, layout);
   const id = await ctx.store.putDrawing(svg);
   await ctx.store.put(chatId, { ...session, stage: "layout_review", shape: layout.shape });
   await ctx.tg.sendChatAction(chatId, "upload_document").catch(() => undefined);
