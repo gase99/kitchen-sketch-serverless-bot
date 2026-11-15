@@ -183,7 +183,7 @@ export function normalizeSketch(raw: unknown): KitchenSketch {
     walls,
     openings,
     fixtures,
-    confidence: Math.max(0, Math.min(1, num(r.confidence, 0.5))),
+    confidence: Math.max(0, Math.min(1, num(r.confidence, 0.5) - (notes.some((n) => n.startsWith("Dimensions did not close:")) ? 0.15 : 0))),
     notes,
   };
 }
@@ -213,6 +213,15 @@ function closePolygon(walls: Wall[], notes: string[], locked: ReadonlySet<string
   }
   const fix = (err: number, horizontal: boolean) => {
     if (err === 0) return;
+    const measured = walls.reduce((sum, w) => {
+      const [vx, vy] = AXIS[w.direction];
+      return sum + ((horizontal ? vx : vy) !== 0 ? w.length : 0);
+    }, 0);
+    // A small closure adjustment can compensate for sketch-reading/rounding noise. A large
+    // mismatch usually means a wall was misread; silently warping that wall makes a false plan.
+    if (Math.abs(err) > Math.max(30, measured * 0.1)) {
+      throw new SketchValidationError(`Wall lengths do not close (error ${Math.abs(err)} cm)`);
+    }
     for (let i = walls.length - 1; i >= 0; i--) {
       const w = walls[i];
       const [vx, vy] = AXIS[w.direction];
